@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  postgres:
+    restart: always
+    image: kiasaki/alpine-postgres:9.5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgress
+    ports:
+      - '5431:5432'
+    networks:
+      - main
+networks:
+  main:
+    driver: bridge
