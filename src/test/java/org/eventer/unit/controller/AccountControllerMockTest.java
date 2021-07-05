@@ -77,23 +77,4 @@ public class AccountControllerMockTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(account.getName())));
     }
-
-    @Test
-    public void updateAccountWhenPutMethod() throws Exception {
-        String accountName = "Test Name";
-        String payload = String.format("{\"name\": \"%s\"}", accountName);
-
-        Account account = new Account(accountName);
-        account.setId(1L);
-
-        given(accountService.updateAccount(account.getId(), account)).willReturn(java.util.Optional.of(account));
-
-        mockMvc.perform(put("/api/account/" + account.getId().toString())
-                .content(payload)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("name", is(account.getName())));
-    }
-
-    // TODO: test findAccountByNameWhenGetMethod
 }
