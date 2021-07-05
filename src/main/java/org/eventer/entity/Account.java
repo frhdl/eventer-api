@@ -1,25 +1,35 @@
 package org.eventer.entity;
 
 import lombok.AllArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
+
 import javax.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Account")
 @AllArgsConstructor
-@Table(name="accounts")
+@Table(name = "accounts")
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="name")
     private String name;
 
-    Account(){}
+    @JsonIgnore
+    @OneToMany(targetEntity = Event.class, mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Event> events;
+
+    public Account(){
+        super();
+    }
 
     public Account(String name) {
+        super();
         this.name = name;
     }
 
@@ -37,6 +47,10 @@ public class Account {
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setEventsList(List<Event> events) {
+        this.events = events;
     }
 
     @Override
