@@ -13,4 +13,6 @@ public interface EventService {
     Optional<List<Event>> findByAccount(Account account);
 
     List<Event> createEvent(List<Event> eventsToBeCreated);
+
+    Optional<Exception> deleteAllEvents(List<Event> events);
 }

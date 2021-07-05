@@ -33,4 +33,15 @@ public class EventServiceImpl implements EventService {
     public List<Event> createEvent(List<Event> eventsToBeCreated) {
         return eventRepository.saveAll(eventsToBeCreated);
     }
+
+    @Override
+    public Optional<Exception> deleteAllEvents(List<Event> events) {
+        try {
+            eventRepository.deleteAll(events);
+        } catch (Exception e) {
+            return Optional.of(e);
+        }
+
+        return Optional.empty();
+    }
 }

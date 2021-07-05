@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "Account")
+@Entity
 @AllArgsConstructor
 @Table(name = "accounts")
 public class Account {
@@ -41,35 +41,28 @@ public class Account {
         return this.id;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
     public void setId(Long id){
         this.id = id;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public void setName(String name){
         this.name = name;
     }
 
-    public void setEventsList(List<Event> events) {
-        this.events = events;
-    }
-
     @Override
     public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof Account))
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Objects.equals(this.id, account.id) && Objects.equals(this.name, account.name);
+        return Objects.equals(id, account.id) && Objects.equals(name, account.name) && Objects.equals(events, account.events) && Objects.equals(stats, account.stats);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
+        return Objects.hash(id, name, events, stats);
     }
 }

@@ -6,11 +6,11 @@ import org.hibernate.annotations.SQLInsert;
 
 import javax.persistence.*;
 
-@Entity(name = "AccountStats")
+@Entity
 @AllArgsConstructor
-@Table(name = "account_stats", uniqueConstraints = { @UniqueConstraint(columnNames = { "day", "event_type" }) })
+@Table(name = "account_stats", uniqueConstraints = { @UniqueConstraint(columnNames = { "account_id", "day", "event_type" }) })
 @SQLInsert(sql="INSERT INTO account_stats (account_id, count, day, event_type) values (?, ?, ?, ?) " +
-        "ON CONFLICT (day,event_type) DO UPDATE SET count = account_stats.count + EXCLUDED.count")
+        "ON CONFLICT (account_id,day,event_type) DO UPDATE SET count = account_stats.count + EXCLUDED.count")
 public class Stats {
 
     @Id
@@ -29,7 +29,7 @@ public class Stats {
     @JsonIgnore
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false)
-    private Account account;
+    public Account account;
 
     public Stats() {
         super();
@@ -43,40 +43,16 @@ public class Stats {
         this.account = account;
     }
 
-    private Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
     public void setDay(String day) {
         this.day = day;
-    }
-
-    public String getEventType() {
-        return eventType;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-    public Long getCount() {
-        return count;
-    }
-
     public void setCount(Long count) {
         this.count = count;
-    }
-
-    private Account getAccount() {
-        return account;
     }
 
     public void setAccount(Account account) {
