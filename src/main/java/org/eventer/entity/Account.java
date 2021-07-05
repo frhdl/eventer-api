@@ -24,6 +24,10 @@ public class Account {
     @OneToMany(targetEntity = Event.class, mappedBy = "account", cascade = CascadeType.ALL)
     private List<Event> events;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Stats.class, mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Stats> stats;
+
     public Account(){
         super();
     }
