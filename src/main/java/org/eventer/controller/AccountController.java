@@ -20,7 +20,17 @@ public class AccountController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<List<Account>> getAllAccounts(){
+    public ResponseEntity<List<Account>> getAllAccounts(@RequestParam(value = "name", required = false) Optional<String> accountName){
+
+            if (accountName.isPresent()) {
+                List<Account> accounts = accountService.findAccountByName(accountName.get());
+
+                if (accounts.isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+
+                return ResponseEntity.ok(accounts);
+            }
 
             List<Account> accounts = accountService.getAllAccounts();
 
@@ -32,7 +42,7 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable("id") long id){
+    public ResponseEntity<Account> getAccountById(@PathVariable("id") Long id){
         Optional<Account> account = accountService.getAccountById(id);
 
         if (account.isEmpty()) {
@@ -40,17 +50,6 @@ public class AccountController {
         }
 
         return ResponseEntity.ok(account.get());
-    }
-
-    @GetMapping("/account/search/findByName")
-    public ResponseEntity<List<Account>> findAccountByName(@RequestParam(value = "name") String accountName) {
-        List<Account> accounts = accountService.findAccountByName(accountName);
-
-        if (accounts.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return ResponseEntity.ok(accounts);
     }
 
     @PostMapping("/account")
@@ -65,7 +64,7 @@ public class AccountController {
         Optional<Account> account = accountService.updateAccount(id, dataToBeUpdated);
 
         if (account.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         return ResponseEntity.ok(account.get());
