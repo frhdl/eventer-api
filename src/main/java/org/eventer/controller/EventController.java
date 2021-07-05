@@ -4,6 +4,7 @@ import org.eventer.entity.Account;
 import org.eventer.entity.Event;
 import org.eventer.service.AccountService;
 import org.eventer.service.EventService;
+import org.eventer.service.StatsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,12 @@ public class EventController {
 
     private final EventService eventService;
     private final AccountService accountService;
+    private final StatsService statsService;
 
-    EventController(EventService eventService, AccountService accountService) {
+    EventController(EventService eventService, AccountService accountService, StatsService statsService) {
         this.eventService = eventService;
         this.accountService = accountService;
+        this.statsService = statsService;
     }
 
     @GetMapping("/event")
@@ -63,6 +66,8 @@ public class EventController {
         }
 
         List<Event> events = eventService.createEvent(eventsToBeCreated);
+
+        statsService.createOrUpdateAccountStats(account.get(), eventsToBeCreated);
 
         return ResponseEntity.ok(events);
     }
