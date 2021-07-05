@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "Event")
+@Entity
 @AllArgsConstructor
 @Table(name = "events")
 public class Event {
@@ -30,7 +30,7 @@ public class Event {
     @JsonIgnore
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    public Account account;
 
     public Event(){ super();}
 
@@ -41,53 +41,21 @@ public class Event {
         this.account = account;
     }
 
-    private Long getId(){
-        return this.id;
-    }
-
     public String getType(){
         return this.type;
     }
 
-    private Account getAccount() { return this.account; }
+    public Account getAccount() { return this.account; }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     public Date getHappenedAt() {
         return happenedAt;
     }
 
     public Date getCreatedAt() {return createdAt;}
-
-    public void setId(Long id){
-        this.id = id;
-    }
-
-    public void setType(String type){
-        this.type = type;
-    }
-
-    public void setHappenedAt(Date happenedAt) {
-        this.happenedAt = happenedAt;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof Event))
-            return false;
-        Event event = (Event) o;
-        return Objects.equals(this.id, event.id) && Objects.equals(this.type, event.type) && Objects.equals(this.createdAt, event.createdAt) && Objects.equals(this.account, event.account);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.type, this.account);
-    }
 
     @Override
     public String toString() {

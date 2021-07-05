@@ -24,8 +24,6 @@ public class CleanupScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(CleanupScheduler.class);
 
-    private static final SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss");
-
     public CleanupScheduler(EventService eventService) {
         this.eventService = eventService;
     }

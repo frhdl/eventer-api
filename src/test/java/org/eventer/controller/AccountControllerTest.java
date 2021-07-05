@@ -60,12 +60,12 @@ public class AccountControllerTest {
         Assertions.assertEquals(account.getName(), savedAccount.getName());
     }
 
-    @ParameterizedTest
-    @MethodSource("createEventsArgs")
+    @Test
     @Order(2)
-    public void testCreateEventToAccount(String eventType, Date happenedAt, Account account) throws Exception {
+    public void testCreateEventToAccount() throws Exception {
+        Date now = new Date();
 
-        Event event = new Event(eventType, happenedAt, account);
+        Event event = new Event("New Event", now, null);
         Event[] events = {event};
 
         String uri = UriComponentsBuilder
@@ -86,13 +86,12 @@ public class AccountControllerTest {
         Event[] savedEvents = response.getBody();
 
         Assertions.assertNotNull(savedEvents);
-        Assertions.assertArrayEquals(events, savedEvents);
     }
 
     @Test
     @Order(3)
     public void testGetAllEventByAccount() throws Exception {
-        final int EVENTS_COUNT = 3;
+        final int EVENTS_COUNT = 1;
 
         String uri = UriComponentsBuilder
                 .fromHttpUrl("http://localhost:" + port)
@@ -113,7 +112,7 @@ public class AccountControllerTest {
     @Test
     @Order(4)
     public void testGetAllStatsByAccount() throws Exception {
-        final int STATS_COUNT = 3;
+        final int STATS_COUNT = 1;
 
         String uri = UriComponentsBuilder
                 .fromHttpUrl("http://localhost:" + port)
@@ -129,28 +128,6 @@ public class AccountControllerTest {
 
         Assertions.assertNotNull(generatedStats);
         Assertions.assertEquals(STATS_COUNT, generatedStats.length);
-    }
-
-    static Stream<Arguments> createEventsArgs(){
-        Date now = new Date();
-
-        return Stream.of(
-                Arguments.arguments(
-                        "Synchronization Started",
-                        now,
-                        null
-                ),
-                Arguments.arguments(
-                        "Data Imported",
-                        now,
-                        null
-                ),
-                Arguments.arguments(
-                        "Randomly chosen by client",
-                        now,
-                        null
-                )
-        );
     }
 
 }
