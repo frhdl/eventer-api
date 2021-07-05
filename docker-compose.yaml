@@ -2,13 +2,21 @@ version: '3'
 
 services:
   postgres:
-    restart: always
     image: kiasaki/alpine-postgres:9.5
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgress
     ports:
       - '5431:5432'
+    networks:
+      - main
+  postgres-test-db:
+    image: kiasaki/alpine-postgres:9.5
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+    ports:
+      - '5430:5432'
     networks:
       - main
 networks:
