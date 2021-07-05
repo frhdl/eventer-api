@@ -2,20 +2,29 @@ package org.eventer.controller;
 
 import org.eventer.entity.Account;
 import org.eventer.entity.Event;
+import org.eventer.entity.Stats;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Date;
+import java.util.stream.Stream;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ComponentScan
+@Configuration
 public class AccountControllerTest {
 
     @LocalServerPort
@@ -51,11 +60,12 @@ public class AccountControllerTest {
         Assertions.assertEquals(account.getName(), savedAccount.getName());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("createEventsArgs")
     @Order(2)
-    public void testCreateEventToAccount() throws Exception {
-        Date now = new Date();
-        Event event = new Event("Test Started", now, null);
+    public void testCreateEventToAccount(String eventType, Date happenedAt, Account account) throws Exception {
+
+        Event event = new Event(eventType, happenedAt, account);
         Event[] events = {event};
 
         String uri = UriComponentsBuilder
@@ -82,7 +92,7 @@ public class AccountControllerTest {
     @Test
     @Order(3)
     public void testGetAllEventByAccount() throws Exception {
-        int eventsCount = 1;
+        final int EVENTS_COUNT = 3;
 
         String uri = UriComponentsBuilder
                 .fromHttpUrl("http://localhost:" + port)
@@ -97,6 +107,50 @@ public class AccountControllerTest {
         Event[] savedEvents = response.getBody();
 
         Assertions.assertNotNull(savedEvents);
-        Assertions.assertEquals(eventsCount, savedEvents.length);
+        Assertions.assertEquals(EVENTS_COUNT, savedEvents.length);
     }
+
+    @Test
+    @Order(4)
+    public void testGetAllStatsByAccount() throws Exception {
+        final int STATS_COUNT = 3;
+
+        String uri = UriComponentsBuilder
+                .fromHttpUrl("http://localhost:" + port)
+                .path("/api/stats?accountId=1")
+                .build()
+                .toString();
+
+        final ResponseEntity<Stats[]> response = restTemplate.getForEntity(uri, Stats[].class);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Stats[] generatedStats = response.getBody();
+
+        Assertions.assertNotNull(generatedStats);
+        Assertions.assertEquals(STATS_COUNT, generatedStats.length);
+    }
+
+    static Stream<Arguments> createEventsArgs(){
+        Date now = new Date();
+
+        return Stream.of(
+                Arguments.arguments(
+                        "Synchronization Started",
+                        now,
+                        null
+                ),
+                Arguments.arguments(
+                        "Data Imported",
+                        now,
+                        null
+                ),
+                Arguments.arguments(
+                        "Randomly chosen by client",
+                        now,
+                        null
+                )
+        );
+    }
+
 }

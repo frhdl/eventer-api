@@ -89,6 +89,6 @@ public class Event {
 
     @Override
     public String toString() {
-        return String.format("Event{\"happenedAt\": \"%s\", \"type\": \"%s\"}", this.happenedAt, this.type);
+        return String.format("Event{\"happenedAt\": \"%s\", \"type\": \"%s\"}", happenedAt, type);
     }
 }
