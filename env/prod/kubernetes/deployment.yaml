@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web
+  namespace: your_name_space
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: image_name
+        args: ["java","-jar","/app.jar"]
+        ports:
+        - containerPort: 443
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+      imagePullSecrets:
+      - name: eventer
